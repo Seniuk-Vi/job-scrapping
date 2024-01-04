@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+## DB config
+spring:
+  application:
+    name: job-scrapping-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/jobs-scrapping
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+
+## OpenApi config
+springdoc:
+  packagesToScan: org.brain.jobscrapping.controller
+  pathsToMatch:
+    - /api/v1/scrape/**
+
+webdriver:
+  chrome:
+    driver: ${CHROME_DRIVER_PATH:/usr/bin/chromedriver}
