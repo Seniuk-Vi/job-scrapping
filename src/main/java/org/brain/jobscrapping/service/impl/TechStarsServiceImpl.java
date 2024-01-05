@@ -11,6 +11,7 @@ import org.brain.jobscrapping.service.TechStarsService;
 import org.brain.jobscrapping.utils.Base64Helper;
 import org.brain.jobscrapping.utils.DateConverter;
 import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -34,8 +35,8 @@ public class TechStarsServiceImpl implements TechStarsService {
     private final ChromeDriver chromeDriver;
     @PostConstruct
     void postConstruct(){
-        this.wait = new WebDriverWait(chromeDriver, Duration.ofSeconds(5));
-        chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        this.wait = new WebDriverWait(chromeDriver, Duration.ofSeconds(7));
+        chromeDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(7));
     }
 
     private final String JOB_FUNCTION_BUTTON_CLASS = ".sc-dmqHEX.enTheS";
@@ -245,8 +246,16 @@ public class TechStarsServiceImpl implements TechStarsService {
 
     private void closeCookiesApproval() {
         // close cookies approval if button exists
-        if (chromeDriver.findElements(By.cssSelector("#onetrust-reject-all-handler")).isEmpty())
-            return;
-        chromeDriver.findElement(By.cssSelector("#onetrust-reject-all-handler")).click();
+        try {
+            // Wait for the button to be clickable
+            WebDriverWait wait = new WebDriverWait(chromeDriver, Duration.ofSeconds(10));
+            WebElement rejectCookiesButton = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#onetrust-close-btn-container button")));
+
+            // Click the button
+            rejectCookiesButton.click();
+        } catch (TimeoutException e) {
+            // The button was not found within the specified time
+            System.out.println("Cookies approval button was not found or not clickable within the specified time.");
+        }
     }
 }

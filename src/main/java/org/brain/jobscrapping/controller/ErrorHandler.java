@@ -5,6 +5,7 @@ import org.brain.jobscrapping.exceptions.Error;
 import org.brain.jobscrapping.exceptions.ErrorType;
 import org.brain.jobscrapping.exceptions.ServiceException;
 import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriverException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +27,12 @@ public class ErrorHandler {
         Error error = new Error(ex.getMessage(), ErrorType.FATAL_ERROR, LocalDateTime.now());
         return ResponseEntity.internalServerError().body(error);
     }
-
+    @ExceptionHandler(WebDriverException.class)
+    public ResponseEntity<Error> handleWebDriverException(WebDriverException ex, HandlerMethod hm) {
+        log.error("handleWebDriverException: message {}, method {}", ex.getMessage(), hm.getMethod().getName(), ex);
+        Error error = new Error(ex.getMessage(), ErrorType.FATAL_ERROR, LocalDateTime.now());
+        return ResponseEntity.internalServerError().body(error);
+    }
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<Error> handleServiceException(ServiceException ex, HandlerMethod hm) {
         log.error("handleServiceException: message {}, method {}", ex.getMessage(), hm.getMethod().getName(), ex);

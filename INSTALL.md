@@ -22,7 +22,8 @@
     - replace 'DB_PASSWORD' with your db password
     - replace 'CHROME_DRIVER_PATH' with your path to chrome driver
 - run `docker compose up`
-- open pgAdmin and create server with database with name `jobs-scrapping`
+- open pgAdmin and create server (name=postgres, address=postgres, password=onYourWish) 
+- create database with name `jobs-scrapping`
 - start application again
 - open swagger ui by url http://localhost:8080/swagger-ui/index.html
 
